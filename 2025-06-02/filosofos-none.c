@@ -11,6 +11,7 @@ Compilar com gcc -Wall filosofos-none.c -o filosofos-none -lpthread
 #define NUMFILO 5
 
 pthread_t filosofo [NUMFILO] ;	// threads filosofos
+pthread_mutex_t hashis[NUMFILO];
 
 // espaços para separar as colunas de impressão
 char *space[] = {"", "\t", "\t\t", "\t\t\t", "\t\t\t\t" } ;
@@ -54,14 +55,28 @@ void larga_hashi (int f, int h)
 void *threadFilosofo (void *arg)
 {
   int i = (long int) arg ;
+
   while (1)
   {
     medita (i) ;
-    pega_hashi (i, i) ;
-    pega_hashi (i, (i+1) % NUMFILO) ;
+    if(i = 0){
+      pthread_mutex_lock(&hashis[(i + 1) / NUMFILO]);
+      pega_hashi (i, (i+1) % NUMFILO) ;
+      pthread_mutex_lock(&hashis(i));
+      pega_hashi (i, i) ;
+    } else {
+      pthread_mutex_lock(&hashi_esquerdo);
+      pega_hashi (i, i) ;
+      pthread_mutex_lock(&hashi_direito);
+      pega_hashi (i, (i+1) % NUMFILO) ;
+    }
+  
     come (i) ;
     larga_hashi (i, i) ;
+    pthread_mutex_lock(&hashi_esquerdo);
     larga_hashi (i, (i+1) % NUMFILO) ;
+    pthread_mutex_lock(&hashi_direito);
+
   }
   pthread_exit (NULL) ;
 }
@@ -70,7 +85,11 @@ void *threadFilosofo (void *arg)
 int main (int argc, char *argv[])
 {
   long i, status ;
-
+  for (int j = 0; j < sizeof(hashis); j++)
+  {
+    pthread_mutex_init(&hashis[j], NULL);
+  }
+  
   // para o printf não se confundir com a threads
   setvbuf (stdout, 0, _IONBF, 0) ;
 

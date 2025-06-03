@@ -10,7 +10,7 @@ Compilar com gcc -Wall pc-none.c -o pc-none -lpthread
 #include <semaphore.h>
 
 #define NUM_PROD 5
-#define NUM_CONS 3
+#define NUM_CONS 5
 #define VAGAS 6
 
 int num_itens, num_vagas ; 	// contadores de vagas e peças
